@@ -1,0 +1,4 @@
+﻿*.suo
+FamilyTree.API/bin
+FamilyTree.API/obj
+.vs
