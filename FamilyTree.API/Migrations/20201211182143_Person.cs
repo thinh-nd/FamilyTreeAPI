@@ -11,14 +11,14 @@ namespace FamilyTree.API.Migrations
                 name: "Person",
                 columns: table => new
                 {
-                    PersonId = table.Column<int>(nullable: false)
+                    PersonId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     FirstName = table.Column<string>(type: "varchar(100)", nullable: true),
                     MiddleName = table.Column<string>(type: "varchar(100)", nullable: true),
                     LastName = table.Column<string>(type: "varchar(100)", nullable: true),
-                    Gender = table.Column<int>(nullable: false),
-                    DateOfBirth = table.Column<DateTime>(nullable: false),
-                    DateOfDeath = table.Column<DateTime>(nullable: false)
+                    Gender = table.Column<int>(type: "INTEGER", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    DateOfDeath = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

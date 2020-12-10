@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyTree.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201210182005_Relationship")]
+    [Migration("20201211182418_Relationship")]
     partial class Relationship
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,10 +48,10 @@ namespace FamilyTree.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateOfDeath")
+                    b.Property<DateTime?>("DateOfDeath")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")

@@ -24,9 +24,9 @@ namespace FamilyTree.API.Model.Data
 
         public Gender Gender { get; set; }
 
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
-        public DateTime DateOfDeath { get; set; }
+        public DateTime? DateOfDeath { get; set; }
 
         public SpousalRelationship SpousalRelationship { get; set; }
 

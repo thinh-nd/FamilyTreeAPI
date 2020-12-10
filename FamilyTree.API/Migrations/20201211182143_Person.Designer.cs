@@ -9,25 +9,25 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyTree.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201209154122_Person")]
+    [Migration("20201211182143_Person")]
     partial class Person
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.10");
+                .HasAnnotation("ProductVersion", "5.0.1");
 
-            modelBuilder.Entity("FamilyTree.API.Model.Person", b =>
+            modelBuilder.Entity("FamilyTree.API.Model.Data.Person", b =>
                 {
                     b.Property<int>("PersonId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateOfDeath")
+                    b.Property<DateTime?>("DateOfDeath")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")

@@ -46,10 +46,10 @@ namespace FamilyTree.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateOfDeath")
+                    b.Property<DateTime?>("DateOfDeath")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
