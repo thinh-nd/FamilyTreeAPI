@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +28,8 @@ namespace FamilyTree.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<ApplicationDbContext>(option => option.UseSqlite("Data Source=D:\\Coding\\SQLiteStudio\\FamilyTreeDb;"));
+            var dataSourcePath = $"{Directory.GetCurrentDirectory()}\\DatabaseFiles\\FamilyTree";
+            services.AddDbContext<ApplicationDbContext>(option => option.UseSqlite($"Data Source={dataSourcePath}"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
