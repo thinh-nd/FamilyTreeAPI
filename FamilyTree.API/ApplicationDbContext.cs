@@ -1,4 +1,5 @@
 ﻿using FamilyTree.API.Model;
+using FamilyTree.API.Model.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,39 @@ namespace FamilyTree.API
         }
 
         public DbSet<Person> Person { get; set; }
+        public DbSet<SpousalRelationship> SpousalRelationship { get; set; }
+        public DbSet<ParentChildRelationship> ParentChildRelationship { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<SpousalRelationship>()
+                .HasOne(r => r.Person)
+                .WithOne(p => p.SpousalRelationship);
+
+            builder.Entity<SpousalRelationship>()
+                .HasOne(r => r.Spouse)
+                .WithOne();
+
+            builder.Entity<ParentChildRelationship>()
+                .HasOne(r => r.Parent)
+                .WithMany();
+
+            builder.Entity<ParentChildRelationship>()
+                .HasOne(r => r.Child)
+                .WithMany(p => p.ParentChildRelationships);
+
+            builder.Entity<SpousalRelationship>(entity =>
+            {
+                entity.HasIndex(r => r.PersonId).IsUnique();
+                entity.HasIndex(r => r.SpouseId).IsUnique();
+                entity.HasCheckConstraint("CK_Monogamy", "PersonId != SpouseId");
+            });
+
+            builder.Entity<ParentChildRelationship>(entity =>
+            {
+                entity.HasIndex(r => r.ChildId).IsUnique();
+                entity.HasCheckConstraint("CK_Paradox", "ParentId != ChildId");
+            });
+        }
     }
 }

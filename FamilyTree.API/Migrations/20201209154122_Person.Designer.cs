@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyTree.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201208174523_Person")]
+    [Migration("20201209154122_Person")]
     partial class Person
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,16 +31,16 @@ namespace FamilyTree.API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<string>("Gender")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Gender")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("MiddleName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("PersonId");
 
