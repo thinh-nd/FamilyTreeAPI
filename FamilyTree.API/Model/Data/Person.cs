@@ -28,9 +28,15 @@ namespace FamilyTree.API.Model.Data
 
         public DateTime? DateOfDeath { get; set; }
 
+        public bool IsSpouse { get; set; }
+
         public SpousalRelationship SpousalRelationship { get; set; }
 
         public IEnumerable<ParentChildRelationship> ParentChildRelationships { get; set; }
+
+        public bool HasSpouse() => SpousalRelationship != null;
+
+        public bool HasChildren() => ParentChildRelationships?.Count() > 0;
     }
 
     public enum Gender
