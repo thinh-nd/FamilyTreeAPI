@@ -30,7 +30,9 @@ namespace FamilyTree.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson(option => option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            services.AddControllers()
+                .AddNewtonsoftJson(option => option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            services.AddSwaggerGen();
 
             var dataSourcePath = $"{Directory.GetCurrentDirectory()}\\DatabaseFiles\\FamilyTree";
             services.AddDbContext<ApplicationDbContext>(option => option.UseSqlite($"Data Source={dataSourcePath}"));
@@ -47,6 +49,9 @@ namespace FamilyTree.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "Family Tree API"));
 
             app.UseRouting();
 
