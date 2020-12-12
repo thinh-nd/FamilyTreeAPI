@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyTree.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201211182418_Relationship")]
-    partial class Relationship
+    [Migration("20201212091435_Person_IsSpouse")]
+    partial class Person_IsSpouse
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -60,6 +60,9 @@ namespace FamilyTree.API.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsSpouse")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .HasColumnType("varchar(100)");
 
@@ -99,13 +102,13 @@ namespace FamilyTree.API.Migrations
             modelBuilder.Entity("FamilyTree.API.Model.Data.ParentChildRelationship", b =>
                 {
                     b.HasOne("FamilyTree.API.Model.Data.Person", "Child")
-                        .WithMany("ParentChildRelationships")
+                        .WithMany()
                         .HasForeignKey("ChildId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FamilyTree.API.Model.Data.Person", "Parent")
-                        .WithMany()
+                        .WithMany("ParentChildRelationships")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -124,8 +127,8 @@ namespace FamilyTree.API.Migrations
                         .IsRequired();
 
                     b.HasOne("FamilyTree.API.Model.Data.Person", "Spouse")
-                        .WithOne()
-                        .HasForeignKey("FamilyTree.API.Model.Data.SpousalRelationship", "SpouseId")
+                        .WithMany()
+                        .HasForeignKey("SpouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

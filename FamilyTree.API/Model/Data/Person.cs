@@ -30,11 +30,13 @@ namespace FamilyTree.API.Model.Data
 
         public bool IsSpouse { get; set; }
 
+        [InverseProperty("Person")]
         public SpousalRelationship SpousalRelationship { get; set; }
 
+        [InverseProperty("Parent")]
         public IEnumerable<ParentChildRelationship> ParentChildRelationships { get; set; }
 
-        public bool HasSpouse() => SpousalRelationship != null;
+        public bool HasSpouse() => SpousalRelationship?.Spouse != null;
 
         public bool HasChildren() => ParentChildRelationships?.Count() > 0;
     }

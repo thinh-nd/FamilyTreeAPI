@@ -100,13 +100,13 @@ namespace FamilyTree.API.Migrations
             modelBuilder.Entity("FamilyTree.API.Model.Data.ParentChildRelationship", b =>
                 {
                     b.HasOne("FamilyTree.API.Model.Data.Person", "Child")
-                        .WithMany("ParentChildRelationships")
+                        .WithMany()
                         .HasForeignKey("ChildId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FamilyTree.API.Model.Data.Person", "Parent")
-                        .WithMany()
+                        .WithMany("ParentChildRelationships")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -125,8 +125,8 @@ namespace FamilyTree.API.Migrations
                         .IsRequired();
 
                     b.HasOne("FamilyTree.API.Model.Data.Person", "Spouse")
-                        .WithOne()
-                        .HasForeignKey("FamilyTree.API.Model.Data.SpousalRelationship", "SpouseId")
+                        .WithMany()
+                        .HasForeignKey("SpouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
