@@ -1,4 +1,5 @@
-﻿using FamilyTree.API.Model.Data;
+﻿using FamilyTree.API.Exceptions;
+using FamilyTree.API.Model.Data;
 using FamilyTree.API.Model.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -40,13 +41,13 @@ namespace FamilyTree.API.Repositories
                     }
                 }
             }
-            _context.SaveChanges();
+            Save();
         }
 
         public void Delete()
         {
             _context.Person.RemoveRange(_context.Person);
-            _context.SaveChanges();
+            Save();
         }
 
         public void AddChild(int parentId, Person child)
@@ -62,7 +63,7 @@ namespace FamilyTree.API.Repositories
                 PersonId = parentId,
                 Child = child
             });
-            _context.SaveChanges();
+            Save();
         }
 
         public void AddParent(int childId, Person parent)
@@ -74,7 +75,7 @@ namespace FamilyTree.API.Repositories
                 PersonId = firstParent.PersonId,
                 Spouse = parent
             };
-            _context.SaveChanges();
+            Save();
         }
 
         public void AddGrandparent(int grandchildId, Person grandparent)
@@ -86,7 +87,19 @@ namespace FamilyTree.API.Repositories
                 PersonId = firstGrandparent.PersonId,
                 Spouse = grandparent
             };
-            _context.SaveChanges();
+            Save();
+        }
+
+        private void Save()
+        {
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception e) when (e is DbUpdateException)
+            {
+                throw new EntityNotFoundException("Entity not found. This may due to id on request does not exist.", e);
+            }
         }
 
         private Person GetParent(int personId) => GetAncestor(personId, 1);
@@ -109,7 +122,7 @@ namespace FamilyTree.API.Repositories
             {
                 if (ancestor.ParentRelationship == null)
                 {
-                    throw new Exception($"Cannot find ancestor level {level} of person with id {personId}.");
+                    throw new EntityNotFoundException($"Cannot find ancestor level {level} of person with id {personId}.");
                 }
                 ancestor = ancestor.ParentRelationship.Parent;
             }

@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using FamilyTree.API.Repositories;
 using Newtonsoft.Json;
+using FamilyTree.API.Filters;
 
 namespace FamilyTree.API
 {
@@ -30,7 +31,7 @@ namespace FamilyTree.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
+            services.AddControllers(option => option.Filters.Add<ExceptionFilter>())
                 .AddNewtonsoftJson(option => option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
             services.AddSwaggerGen();
 
