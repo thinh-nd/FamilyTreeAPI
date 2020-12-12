@@ -1,5 +1,6 @@
 ﻿using FamilyTree.API.Model.Data;
 using FamilyTree.API.Model.Request;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace FamilyTree.API.Repositories
                 }
                 if (currentPerson.HasChildren())
                 {
-                    foreach (var relationship in currentPerson.ParentChildRelationships)
+                    foreach (var relationship in currentPerson.ChildRelationships)
                     {
                         var child = relationship.Child;
                         _context.Person.Add(relationship.Child);
@@ -50,11 +51,15 @@ namespace FamilyTree.API.Repositories
 
         public void AddChild(int parentId, Person child)
         {
-            var _ = GetPerson(parentId);
             _context.Person.Add(child);
-            _context.ParentChildRelationship.Add(new ParentChildRelationship
+            _context.ParentRelationship.Add(new ParentRelationship
             {
                 ParentId = parentId,
+                Person = child
+            });
+            _context.ChildRelationship.Add(new ChildRelationship
+            {
+                PersonId = parentId,
                 Child = child
             });
             _context.SaveChanges();
@@ -62,11 +67,8 @@ namespace FamilyTree.API.Repositories
 
         public void AddParent(int childId, Person parent)
         {
-            var _ = GetPerson(childId);
             var firstParent = GetParent(childId);
-
             _context.Person.Add(parent);
-
             firstParent.SpousalRelationship = new SpousalRelationship
             {
                 PersonId = firstParent.PersonId,
@@ -77,12 +79,8 @@ namespace FamilyTree.API.Repositories
 
         public void AddGrandparent(int grandchildId, Person grandparent)
         {
-            var _ = GetPerson(grandchildId);
-            var parent = GetParent(grandchildId);
-            var firstGrandparent = GetParent(parent.PersonId);
-
+            var firstGrandparent = GetGrandparent(grandchildId);
             _context.Person.Add(grandparent);
-
             firstGrandparent.SpousalRelationship = new SpousalRelationship
             {
                 PersonId = firstGrandparent.PersonId,
@@ -91,25 +89,31 @@ namespace FamilyTree.API.Repositories
             _context.SaveChanges();
         }
 
-        private Person GetPerson(int personId)
-        {
-            return _context.Person.Where(p => p.PersonId == personId).FirstOrDefault() 
-                ?? throw new Exception($"Person with id {personId} does not exist.");
-        }
+        private Person GetParent(int personId) => GetAncestor(personId, 1);
 
-        private Person GetParent(int personId)
-        {
-            var parent = (from person in _context.Person 
-                         join parentChild in _context.ParentChildRelationship
-                         on person.PersonId equals parentChild.ParentId
-                         where parentChild.ChildId == personId
-                         select person).FirstOrDefault();
+        private Person GetGrandparent(int personId) => GetAncestor(personId, 2);
 
-            if (parent == null)
+        private Person GetAncestor(int personId, int level)
+        {
+            var ancestors = (from p in _context.Person
+                             join r in _context.ParentRelationship
+                             on p.PersonId equals r.PersonId into pr
+                             from r in pr.DefaultIfEmpty()
+                             select p)
+                            .Include(nameof(ParentRelationship))
+                            .ToList();
+
+            var step = 0;
+            var ancestor = ancestors.Where(a => a.PersonId == personId).FirstOrDefault();
+            while (step++ <= level)
             {
-                throw new Exception($"Cannot find parent of person with id {personId}.");
+                if (ancestor.ParentRelationship == null)
+                {
+                    throw new Exception($"Cannot find ancestor level {level} of person with id {personId}.");
+                }
+                ancestor = ancestor.ParentRelationship.Parent;
             }
-            return parent;
+            return ancestor;
         }
     }
 }

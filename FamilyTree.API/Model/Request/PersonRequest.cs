@@ -28,11 +28,13 @@ namespace FamilyTree.API.Model.Request
 
         public DateTime? DateOfDeath { get; set; }
 
+        public PersonRequest Parent { get; set; }
+
         public PersonRequest[] Childrens { get; set; }
 
         public PersonRequest Spouse { get; set; }
 
-        public Person ConvertToPerson(bool isSpouse = false)
+        public Person ConvertToPerson(Person parent = null, bool isSpouse = false)
         {
             var person = new Person
             {
@@ -42,27 +44,26 @@ namespace FamilyTree.API.Model.Request
                 Gender = Gender.Value,
                 DateOfBirth = DateOfBirth,
                 DateOfDeath = DateOfDeath,
-                IsSpouse = isSpouse,
-                SpousalRelationship = Spouse == null ? null : new SpousalRelationship
-                {
-                    Person = new Person(),
-                    Spouse = Spouse.ConvertToPerson(isSpouse: true)
-                },
-                ParentChildRelationships = Childrens?.Select(child => new ParentChildRelationship
-                {
-                    Parent = new Person(),
-                    Child = child.ConvertToPerson()
-                }).ToList()
+                IsSpouse = isSpouse
             };
 
-            if (Spouse != null)
+            person.SpousalRelationship = Spouse == null ? null : new SpousalRelationship
             {
-                person.SpousalRelationship = new SpousalRelationship
-                {
-                    Person = new Person(),
-                    Spouse = Spouse.ConvertToPerson(isSpouse: true)
-                };
-            }
+                Person = new Person(),
+                Spouse = Spouse.ConvertToPerson(isSpouse: true)
+            };
+
+            person.ParentRelationship = parent == null ? null : new ParentRelationship
+            {
+                Person = new Person(),
+                Parent = parent
+            };
+
+            person.ChildRelationships = Childrens?.Select(child => new ChildRelationship
+            {
+                Person = new Person(),
+                Child = child.ConvertToPerson(person)
+            }).ToList();
 
             return person;
         }

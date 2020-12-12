@@ -33,12 +33,15 @@ namespace FamilyTree.API.Model.Data
         [InverseProperty("Person")]
         public SpousalRelationship SpousalRelationship { get; set; }
 
-        [InverseProperty("Parent")]
-        public IEnumerable<ParentChildRelationship> ParentChildRelationships { get; set; }
+        [InverseProperty("Person")]
+        public ParentRelationship ParentRelationship { get; set; }
+
+        [InverseProperty("Person")]
+        public IEnumerable<ChildRelationship> ChildRelationships { get; set; }
 
         public bool HasSpouse() => SpousalRelationship?.Spouse != null;
 
-        public bool HasChildren() => ParentChildRelationships?.Count() > 0;
+        public bool HasChildren() => ChildRelationships?.Count() > 0;
     }
 
     public enum Gender

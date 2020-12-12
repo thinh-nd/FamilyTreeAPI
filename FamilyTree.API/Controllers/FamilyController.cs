@@ -41,21 +41,24 @@ namespace FamilyTree.API.Controllers
         [HttpPost("Child")]
         public ActionResult PostChild([FromBody] ChildRequest request)
         {
-            _familyRepository.AddChild(request.ParentId.Value, request.Child.ConvertToPerson());
+            var child = request.Child.ConvertToPerson();
+            _familyRepository.AddChild(request.ParentId.Value, child);
             return Ok();
         }
 
         [HttpPost("Parent")]
         public ActionResult PostParent([FromBody] ParentRequest request)
         {
-            _familyRepository.AddParent(request.ChildId.Value, request.Parent.ConvertToPerson());
+            var parent = request.Parent.ConvertToPerson(isSpouse: true);
+            _familyRepository.AddParent(request.ChildId.Value, parent);
             return Ok();
         }
 
         [HttpPost("Grandparent")]
         public ActionResult PostGrandparent([FromBody] GrandparentRequest request)
         {
-            _familyRepository.AddParent(request.GrandchildId.Value, request.Grandparent.ConvertToPerson());
+            var grandparent = request.Grandparent.ConvertToPerson(isSpouse: true);
+            _familyRepository.AddParent(request.GrandchildId.Value, grandparent);
             return Ok();
         }
 

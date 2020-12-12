@@ -17,7 +17,8 @@ namespace FamilyTree.API
 
         public DbSet<Person> Person { get; set; }
         public DbSet<SpousalRelationship> SpousalRelationship { get; set; }
-        public DbSet<ParentChildRelationship> ParentChildRelationship { get; set; }
+        public DbSet<ParentRelationship> ParentRelationship { get; set; }
+        public DbSet<ChildRelationship> ChildRelationship { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -28,10 +29,16 @@ namespace FamilyTree.API
                 entity.HasCheckConstraint("CK_Monogamy", "PersonId != SpouseId");
             });
 
-            builder.Entity<ParentChildRelationship>(entity =>
+            builder.Entity<ParentRelationship>(entity =>
+            {
+                entity.HasIndex(r => r.PersonId).IsUnique();
+                entity.HasCheckConstraint("CK_ParentParadox", "PersonId != ParentId");
+            });
+
+            builder.Entity<ChildRelationship>(entity =>
             {
                 entity.HasIndex(r => r.ChildId).IsUnique();
-                entity.HasCheckConstraint("CK_Paradox", "ParentId != ChildId");
+                entity.HasCheckConstraint("CK_ChildParadox", "PersonId != ChildId");
             });
         }
     }
