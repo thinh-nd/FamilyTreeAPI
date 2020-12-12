@@ -21,22 +21,6 @@ namespace FamilyTree.API
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<SpousalRelationship>()
-                .HasOne(r => r.Person)
-                .WithOne(p => p.SpousalRelationship);
-
-            builder.Entity<SpousalRelationship>()
-                .HasOne(r => r.Spouse)
-                .WithOne();
-
-            builder.Entity<ParentChildRelationship>()
-                .HasOne(r => r.Parent)
-                .WithMany();
-
-            builder.Entity<ParentChildRelationship>()
-                .HasOne(r => r.Child)
-                .WithMany(p => p.ParentChildRelationships);
-
             builder.Entity<SpousalRelationship>(entity =>
             {
                 entity.HasIndex(r => r.PersonId).IsUnique();
