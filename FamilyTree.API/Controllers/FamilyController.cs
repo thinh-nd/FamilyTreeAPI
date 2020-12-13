@@ -52,7 +52,7 @@ namespace FamilyTree.API.Controllers
         [HttpPost("Parent")]
         public ActionResult PostParent([FromBody] ParentRequest request)
         {
-            var parent = request.Parent.ConvertToPerson(isSpouse: true);
+            var parent = request.Parent.ConvertToPerson();
             _familyRepository.AddParent(request.ChildId.Value, parent);
             return Ok();
         }
@@ -60,8 +60,8 @@ namespace FamilyTree.API.Controllers
         [HttpPost("Grandparent")]
         public ActionResult PostGrandparent([FromBody] GrandparentRequest request)
         {
-            var grandparent = request.Grandparent.ConvertToPerson(isSpouse: true);
-            _familyRepository.AddParent(request.GrandchildId.Value, grandparent);
+            var grandparent = request.Grandparent.ConvertToPerson();
+            _familyRepository.AddGrandparent(request.GrandchildId.Value, grandparent);
             return Ok();
         }
 

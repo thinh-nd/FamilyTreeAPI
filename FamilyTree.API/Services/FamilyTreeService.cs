@@ -12,7 +12,9 @@ namespace FamilyTree.API.Services
     {
         public string Visualize(Family family)
         {
-            return VisualizePerson(family.Ancestor, 0);
+            var treeView = VisualizePerson(family.Ancestor, 0);
+            treeView += "└─────────────────────";
+            return treeView;
         }
 
         private string VisualizePerson(Person person, int depth)
@@ -36,23 +38,21 @@ namespace FamilyTree.API.Services
         {
             var line = "";
             var children = person.ChildRelationships?.Select(r => r.Child).OrderBy(p => p.FirstName).ToList();
-            for (int i = 0; i < children.Count; i++)
+            foreach (var child in children)
             {
-                line += GetLineStructure(depth, i == children.Count - 1);
-                line += VisualizePerson(children[i], depth);
+                line += GetLineStructure(depth);
+                line += VisualizePerson(child, depth);
             }
             return line;
         }
 
-        private string GetLineStructure(int depth, bool isLastChild = false)
+        private string GetLineStructure(int depth)
         {
             var lineStructure = "";
             lineStructure += depth > 1 
-                ? string.Join("", Enumerable.Repeat("│   ", depth - 1)) 
+                ? string.Join("", Enumerable.Repeat("|   ", depth - 1)) 
                 : "";
-            lineStructure += depth > 0 
-                ? isLastChild ? "└── " : "├── " 
-                : "";
+            lineStructure += depth > 0 ? "├── " : "";
             return lineStructure;
         }
     }

@@ -10,5 +10,9 @@ namespace FamilyTree.API.Exceptions
         public FamilyStructureException(string message) : base(message)
         {
         }
+
+        public FamilyStructureException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }
