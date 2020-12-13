@@ -1,11 +1,9 @@
 ﻿using FamilyTree.API.Exceptions;
 using FamilyTree.API.Model.Data;
-using FamilyTree.API.Model.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FamilyTree.API.Repositories
 {

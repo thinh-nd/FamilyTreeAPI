@@ -1,9 +1,4 @@
 ﻿using FamilyTree.API.Model.Data;
-using FamilyTree.API.Model.Request;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FamilyTree.API.Repositories
 {
