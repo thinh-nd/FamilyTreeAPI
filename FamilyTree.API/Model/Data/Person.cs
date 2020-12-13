@@ -17,9 +17,6 @@ namespace FamilyTree.API.Model.Data
         public string FirstName { get; set; }
 
         [Column(TypeName = "varchar(100)")]
-        public string MiddleName { get; set; }
-
-        [Column(TypeName = "varchar(100)")]
         public string LastName { get; set; }
 
         public Gender Gender { get; set; }

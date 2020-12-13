@@ -13,9 +13,6 @@ namespace FamilyTree.API.Model.Request
         [MaxLength(100)]
         public string FirstName { get; set; }
 
-        [MaxLength(100)]
-        public string MiddleName { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string LastName { get; set; }
@@ -39,7 +36,6 @@ namespace FamilyTree.API.Model.Request
             var person = new Person
             {
                 FirstName = FirstName,
-                MiddleName = MiddleName,
                 LastName = LastName,
                 Gender = Gender.Value,
                 DateOfBirth = DateOfBirth,
