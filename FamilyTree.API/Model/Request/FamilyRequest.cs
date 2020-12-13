@@ -14,10 +14,7 @@ namespace FamilyTree.API.Model.Request
 
         public Family ConvertToFamily()
         {
-            return new Family
-            {
-                Ancestor = Ancestor.ConvertToPerson()
-            };
+            return new Family(Ancestor.ConvertToPerson());
         }
     }
 }

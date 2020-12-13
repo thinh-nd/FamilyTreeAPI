@@ -17,6 +17,8 @@ namespace FamilyTree.API.Repositories
 
         public void AddGrandparent(int grandchildId, Person Grandparent);
 
+        public Family Get();
+
         public void Delete();
     }
 }

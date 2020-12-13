@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using FamilyTree.API.Repositories;
 using Newtonsoft.Json;
 using FamilyTree.API.Filters;
+using FamilyTree.API.Services;
 
 namespace FamilyTree.API
 {
@@ -39,6 +40,7 @@ namespace FamilyTree.API
             services.AddDbContext<ApplicationDbContext>(option => option.UseSqlite($"Data Source={dataSourcePath}"));
 
             services.AddScoped<IFamilyRepository, FamilyRepository>();
+            services.AddScoped<IFamilyTreeService, FamilyTreeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

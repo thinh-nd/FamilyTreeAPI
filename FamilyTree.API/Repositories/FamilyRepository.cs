@@ -90,6 +90,32 @@ namespace FamilyTree.API.Repositories
             Save();
         }
 
+        public Family Get()
+        {
+            var ancestors = (
+                from p in _context.Person
+                join sr in _context.SpousalRelationship on p.PersonId equals sr.PersonId into psr
+                from sr in psr.DefaultIfEmpty()
+                join pr in _context.ParentRelationship on p.PersonId equals pr.PersonId into ppr
+                from pr in ppr.DefaultIfEmpty()
+                join cr in _context.ChildRelationship on p.PersonId equals cr.PersonId into pcr
+                from cr in pcr.DefaultIfEmpty()
+                select p
+            )
+            .Include(p => p.SpousalRelationship)
+            .Include(p => p.ParentRelationship)
+            .Include(p => p.ChildRelationships)
+            .ToList().Where(p => p.ParentRelationship == null && !p.IsSpouse)
+            .Distinct().ToList();
+
+            if (ancestors.Count != 1)
+            {
+                throw new FamilyStructureException($"Family can only has 1 ancestor, {ancestors.Count} ancestors found.");
+            }
+
+            return new Family(ancestors.First());
+        }
+
         private void Save()
         {
             try
@@ -108,13 +134,14 @@ namespace FamilyTree.API.Repositories
 
         private Person GetAncestor(int personId, int level)
         {
-            var ancestors = (from p in _context.Person
-                             join r in _context.ParentRelationship
-                             on p.PersonId equals r.PersonId into pr
-                             from r in pr.DefaultIfEmpty()
-                             select p)
-                            .Include(nameof(ParentRelationship))
-                            .ToList();
+            var ancestors = (
+                from p in _context.Person
+                join r in _context.ParentRelationship on p.PersonId equals r.PersonId into pr
+                from r in pr.DefaultIfEmpty()
+                select p
+            )
+            .Include(p => p.ParentRelationship)
+            .ToList();
 
             var step = 0;
             var ancestor = ancestors.Where(a => a.PersonId == personId).FirstOrDefault();

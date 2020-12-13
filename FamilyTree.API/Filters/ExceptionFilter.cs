@@ -12,12 +12,22 @@ namespace FamilyTree.API.Filters
     {
         public void OnException(ExceptionContext context)
         {
-            if (context.Exception.GetType().Name == nameof(EntityNotFoundException))
+            var clientExceptions = new List<string>()
+            {
+                nameof(EntityNotFoundException),
+                nameof(FamilyStructureException)
+            };
+
+            if (clientExceptions.Contains(context.Exception.GetType().Name))
             {
                 context.Result = new BadRequestObjectResult(new
                 {
                     Error = context.Exception.Message
                 });
+            }
+            else
+            {
+                context.Result = new StatusCodeResult(500);
             }
         }
     }

@@ -1,11 +1,13 @@
 ﻿using FamilyTree.API.Model.Data;
 using FamilyTree.API.Model.Request;
 using FamilyTree.API.Repositories;
+using FamilyTree.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Mime;
 
 namespace FamilyTree.API.Controllers
 {
@@ -14,20 +16,21 @@ namespace FamilyTree.API.Controllers
     public class FamilyController : ControllerBase
     {
         private readonly IFamilyRepository _familyRepository;
+        private readonly IFamilyTreeService _familyTreeService;
 
-        public FamilyController(IFamilyRepository familyRepository)
+        public FamilyController(IFamilyRepository familyRepository, IFamilyTreeService familyTreeService)
         {
             _familyRepository = familyRepository;
+            _familyTreeService = familyTreeService;
         }
 
         [HttpGet]
+        [Produces(MediaTypeNames.Text.Plain)]
         public ActionResult Get()
         {
-            var result = new
-            {
-                Message = "Ok"
-            };
-            return new ObjectResult(result);
+            var family = _familyRepository.Get();
+            var treeRepresentation = _familyTreeService.Visualize(family);
+            return new ObjectResult(treeRepresentation);
         }
 
         [HttpPost]
