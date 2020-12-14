@@ -15,18 +15,23 @@ namespace FamilyTree.API.Services
 
         private string VisualizePerson(Person person, int depth)
         {
-            var line = $"{person.FirstName} {person.LastName}";
+            var line = VisualizePersonInfo(person);
             line += VisualizeSpouse(person);
             line += Environment.NewLine; depth++;
             line += VisualizeChildren(person, depth);
             return line;
         }
 
+        private string VisualizePersonInfo(Person person)
+        {
+            return $"{person.FirstName} {person.LastName} ({person.PersonId})";
+        }
+
         private string VisualizeSpouse(Person person)
         {
             var spouse = person.SpousalRelationship?.Spouse;
             return spouse != null
-                ? $" - {spouse.FirstName} {spouse.LastName}"
+                ? $" - {VisualizePersonInfo(spouse)}"
                 : "";
         }
 
