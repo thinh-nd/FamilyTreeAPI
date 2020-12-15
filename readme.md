@@ -7,6 +7,8 @@
     - `POST api/Family/Grandparent`
 - Get the `PersonID` (and print the family tree) by using `GET api/Family` 
 - There is no Family-Person relationship (as the requirement do not specify this), therefore this API only support 1 Family tree, if a family tree reach an faulty state (by a bug), or create a new family tree, reset the family tree using `DELETE api/Family` endpoint
+- Ancestor/root can be called on `POST api/Family/Parent`, creating a new ancestor/root, but can not be called on `POST api/Family/Grandparent`
+- Spouse can not be called on `POST api/Family/Parent` as well as `POST api/Family/Grandparent`
 - SQLite 3.24.0 with SQLiteStudio 3.2.1
 
 ### Sample requests

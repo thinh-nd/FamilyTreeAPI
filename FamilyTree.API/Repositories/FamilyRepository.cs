@@ -24,9 +24,15 @@ namespace FamilyTree.API.Repositories
             {
                 var currentPerson = personQueue.Dequeue();
                 _context.Person.Add(currentPerson);
+
                 if (currentPerson.HasSpouse())
                 {
                     var spouse = currentPerson.SpousalRelationship.Spouse;
+                    _context.SpousalRelationship.Add(new SpousalRelationship
+                    {
+                        Person = spouse,
+                        Spouse = currentPerson
+                    });
                     _context.Person.Add(spouse);
                 }
                 if (currentPerson.HasChildren())
@@ -50,6 +56,12 @@ namespace FamilyTree.API.Repositories
 
         public void AddChild(int parentId, Person child)
         {
+            var parent = GetPerson(parentId);
+            if (parent.IsSpouse)
+            {
+                parentId = parent.SpousalRelationship.SpouseId;
+            }
+
             _context.Person.Add(child);
             _context.ParentRelationship.Add(new ParentRelationship
             {
@@ -174,6 +186,8 @@ namespace FamilyTree.API.Repositories
             }
         }
 
+        private Person GetPerson(int personId) => GetAncestor(personId, 0);
+
         private Person GetParent(int personId) => GetAncestor(personId, 1);
 
         private Person GetGrandparent(int personId) => GetAncestor(personId, 2);
@@ -182,29 +196,41 @@ namespace FamilyTree.API.Repositories
         {
             var ancestors = (
                 from p in _context.Person
-                join r in _context.ParentRelationship on p.PersonId equals r.PersonId into pr
-                from r in pr.DefaultIfEmpty()
+                join sr in _context.SpousalRelationship on p.PersonId equals sr.PersonId into psr
+                from sr in psr.DefaultIfEmpty()
+                join pr in _context.ParentRelationship on p.PersonId equals pr.PersonId into ppr
+                from pr in ppr.DefaultIfEmpty()
                 select p
             )
             .Include(p => p.ParentRelationship)
+            .Include(p => p.SpousalRelationship)
             .ToList();
 
             var step = 0;
-            var parent = ancestors.Where(a => a.PersonId == personId).FirstOrDefault();
+            var person = ancestors.Where(a => a.PersonId == personId).FirstOrDefault();
+
+            if (level == 0)
+            {
+                return person;
+            }
 
             while (step++ <= level)
             {
-                if (IsAncestor(parent) && step == level)
+                if (person.IsSpouse)
+                {
+                    throw new FamilyStructureException($"Cannot find parent/ancestor of spouse with id {personId}.");
+                }
+                if (IsAncestor(person) && step == level)
                 {
                     return null;
                 }
-                if (parent.ParentRelationship == null)
+                if (person.ParentRelationship == null)
                 {
                     throw new EntityNotFoundException($"Cannot find ancestor level {level} of person with id {personId}.");
                 }
-                parent = parent.ParentRelationship.Parent;
+                person = person.ParentRelationship.Parent;
             }
-            return parent;
+            return person;
         }
 
         private bool IsAncestor(Person person)
