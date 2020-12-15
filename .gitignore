@@ -2,3 +2,5 @@
 FamilyTree.API/bin
 FamilyTree.API/obj
 .vs
+FamilyTree.API/DatabaseFiles/*-shm
+FamilyTree.API/DatabaseFiles/*-wal
